@@ -1,0 +1,29 @@
+name: Terraform Validation
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  terraform-ci:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Copia el código del repositorio al servidor de GitHub
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      # 2. Instala Terraform en el entorno de ejecución
+      - name: Configurar Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      # 3. Inicializa el directorio (necesario para validar)
+      # Usamos -backend=false porque no necesitamos conectar con LocalStack real para validar sintaxis
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      # 4. Validación del código (El objetivo principal)
+      - name: Terraform Validate
+        run: terraform validate
+
