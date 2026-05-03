@@ -1,0 +1,52 @@
+name: Terraform Deploy to LocalStack
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    # Servicios necesarios: Levantamos LocalStack como un contenedor adjunto services:
+      localstack:
+        image: localstack/localstack:latest
+        ports:
+          - 4566:4566
+          - 4510-4559:4510-4559
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_wrapper: false # Desactivamos el wrapper para ver logs limpios
+
+      # Configuramos credenciales falsas para que Terraform no se queje
+      - name: Configure AWS Credentials
+        run:
+          mkdir -p ~/.aws
+          echo "[default]
+          aws_access key id = test
+          aws_secret_access_key = test
+          region = us-east-1" > ~/.aws/credentials
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Plan
+        run: terraform plan
+        env:
+          AWS_ACCESS_KEY_ID: test
+          AWS_SECRET_ACCESSS_KEY: test
+          AWS_DEFAULT_REGION: us-east-1
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve
+        env:
+          AWS_ACCES_KEY_ID: test
+          AWS_SECRET_ACCESS_KEY: test
+          AWS_DEFAULT_REGION: us-east-1
+      - name: Terrafor
