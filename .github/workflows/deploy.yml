@@ -27,7 +27,7 @@ jobs:
 
       # Configuramos credenciales falsas para que Terraform no se queje
       - name: Configure AWS Credentials
-        run:
+        run: |
           mkdir -p ~/.aws
           echo "[default]
           aws_access key id = test
