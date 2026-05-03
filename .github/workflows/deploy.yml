@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     # Servicios necesarios: Levantamos LocalStack como un contenedor adjunto services:
+    services:
       localstack:
         image: localstack/localstack:latest
         ports:
@@ -40,12 +41,12 @@ jobs:
         run: terraform plan
         env:
           AWS_ACCESS_KEY_ID: test
-          AWS_SECRET_ACCESSS_KEY: test
+          AWS_SECRET_ACCESS_KEY: test
           AWS_DEFAULT_REGION: us-east-1
 
       - name: Terraform Apply
         run: terraform apply -auto-approve
         env:
-          AWS_ACCES_KEY_ID: test
+          AWS_ACCESS_KEY_ID: test
           AWS_SECRET_ACCESS_KEY: test
           AWS_DEFAULT_REGION: us-east-1
